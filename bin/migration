@@ -1,0 +1,2 @@
+#!/usr/bin/env mode
+require('../dist/migration-cli');
