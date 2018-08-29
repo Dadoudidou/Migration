@@ -4,8 +4,13 @@ import * as Path from "path"
 import * as moment from "moment"
 import * as deepExtend from "deepextend"
 import * as fs from "fs"
-import { Z_FILTERED } from "zlib";
-import { resolve } from "bluebird";
+
+export interface IPlugin {
+    name: string
+    setup: (config: MigrationConfig) => void
+    up: (options: UpProps) => Promise<any>
+    down: (options: DownProps) => Promise<any>
+}
 
 type CreateMigrationFiles = {
     path: string
@@ -13,11 +18,11 @@ type CreateMigrationFiles = {
     content: string
 }
 
-type UpProps = {
+export type UpProps = {
     toDate?: Date
 }
 
-type DownProps = {
+export type DownProps = {
 
 }
 
@@ -42,6 +47,8 @@ export class Migration {
     private _config: MigrationConfig = undefined;
     private _sequelize: Sequelize.Sequelize = undefined;
     private _migrationFolder: string = undefined
+
+    
 
     setup(options: MigrationConfig){
         this._config = deepExtend( Migration.defaultOptions, options);
@@ -239,7 +246,7 @@ exports.down = async function(db){
     async down(props?: DownProps){
         try {
             if(!props) props = {};
-            
+
             let nb = 1;
             // -- date de dernière migration bdd
             await this.connectToDatabase().catch(err => {throw err});

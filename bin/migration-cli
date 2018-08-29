@@ -1,2 +1,2 @@
-#!/usr/bin/env mode
+#!/usr/bin/env node
 require('../dist/migration-cli');

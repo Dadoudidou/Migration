@@ -32,7 +32,10 @@ program
   .command('create [names...]')
   .description('create a migration')
   .action((names, options) => {
-      Migration.getInstance().setup(updateConfig(config, program)).createMigration(names);
+      Migration
+        .getInstance()
+        .setup(updateConfig(config, program))
+        .createMigration(names);
   });
 
   program
@@ -45,9 +48,12 @@ program
         let __date = moment(options.date);
         if(__date.isValid()) _date = __date.toDate();
       }
-      await Migration.getInstance().setup(updateConfig(config, program)).up({
-        toDate: _date
-      });
+      await Migration
+        .getInstance()
+        .setup(updateConfig(config, program))
+        .up({
+          toDate: _date
+        });
       process.exit();
   });
 
@@ -55,7 +61,10 @@ program
   .command('down')
   .description('restore database')
   .action(async (names, options) => {
-      await Migration.getInstance().setup(updateConfig(config, program)).down();
+      await Migration
+        .getInstance()
+          .setup(updateConfig(config, program))
+          .down();
       process.exit();
   });
 
