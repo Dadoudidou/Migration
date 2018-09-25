@@ -1,7 +1,7 @@
 {
-  "name": "migration",
-  "version": "0.0.1",
-  "description": "A command line migration tool",
+  "name": "@dadoudidou/migration",
+  "version": "0.1.1",
+  "description": "A perso command line migration tool",
   "main": "dist/migration.js",
   "bin": {
     "migration": "./bin/migration-cli"
@@ -10,7 +10,7 @@
     "test": "node bin/migration",
     "start": "webpack --watch --progress"
   },
-  "author": "",
+  "author": "dadoudidou",
   "license": "ISC",
   "dependencies": {
     "commander": "2.17.1",
@@ -23,6 +23,7 @@
     "mysql2": "1.5.2",
     "moment": "2.22.2",
     "deepextend": "0.0.3",
+    "require-from-string": "2.0.2",
     "@types/node": "10.7.1",
     "@types/sequelize": "4.27.24"
   }

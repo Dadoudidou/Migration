@@ -56,6 +56,10 @@ export class Migration {
         return this;
     }
 
+    getConfig(){
+        return this._config;
+    }
+
     private init(){
         this._sequelize = new Sequelize(this._config.database);
         this._migrationFolder = Path.resolve(this._config.migrationFolder);

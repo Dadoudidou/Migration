@@ -1,12 +1,67 @@
 import * as program from "commander"
 import * as path from "path"
+import * as fs from "fs"
 import { Migration } from "../migration";
 import { config, MigrationConfig } from "../shared/config";
 import * as moment from "moment";
+import * as deepExtend from "deepextend"
+import * as requireFromString from "require-from-string"
 
+const readJSONFile = async (file: string): Promise<any> => {
+  return new Promise<string>((resolve, reject) => {
+    fs.readFile(file, undefined, (err, data: string) => {
+      if(err){
+        if(err.code == "ENOENT"){
+          reject(new Error(`"${file}" does not exist`));
+          return;
+        }
+        reject(err);
+      }
+      try {
+        var content = JSON.parse(data);
+        resolve(content);
+      } catch(err){
+        reject(err);
+      }
+    })
+  })
+}
 
-const updateConfig = (config: MigrationConfig, params: any) => {
+const readJSFile = async (file: string): Promise<any> => {
+  return new Promise<string>((resolve, reject) => {
+    fs.readFile(file, { encoding: "utf8" }, (err, data: string) => {
+      if(err){
+        if(err.code == "ENOENT"){
+          reject(new Error(`"${file}" does not exist`));
+          return;
+        }
+        reject(err);
+      }
+      try {
+        var content = requireFromString(data);
+        resolve(content);
+      } catch(err){
+        reject(err);
+      }
+    })
+  })
+}
+
+const updateConfig = async (config: MigrationConfig, params: any) => {
   let _config = { ...config };
+
+  if(params.config){
+    if(path.extname(params.config).toUpperCase() == ".JSON"){
+      let _p = await readJSONFile(params.config);
+      _config = deepExtend({}, _config, _p);
+    } else if(path.extname(params.config).toUpperCase() == ".JS"){
+      let _p = await readJSFile(params.config);
+      _config = deepExtend({}, _config, _p);
+    } else {
+      throw new Error("Config file must be JSON or JS file");
+    }
+  }
+
   if(params.sqlFile) _config = { ..._config, extension: "sql" }
   if(params.migrationDir) _config = { ..._config, migrationFolder: params.migrationDir }
   if(params.databaseHost) _config = { ..._config, database: { ..._config.database, host: params.databaseHost } }
@@ -31,11 +86,12 @@ program
 program
   .command('create [names...]')
   .description('create a migration')
-  .action((names, options) => {
-      Migration
-        .getInstance()
-        .setup(updateConfig(config, program))
-        .createMigration(names);
+  .action(async (names, options) => {
+    let _config = await updateConfig(config, program);
+    Migration
+      .getInstance()
+      .setup(_config)
+      .createMigration(names);
   });
 
   program
@@ -48,9 +104,10 @@ program
         let __date = moment(options.date);
         if(__date.isValid()) _date = __date.toDate();
       }
+      let _config = await updateConfig(config, program);
       await Migration
         .getInstance()
-        .setup(updateConfig(config, program))
+        .setup(_config)
         .up({
           toDate: _date
         });
@@ -61,34 +118,24 @@ program
   .command('down')
   .description('restore database')
   .action(async (names, options) => {
-      await Migration
-        .getInstance()
-          .setup(updateConfig(config, program))
-          .down();
-      process.exit();
+    let _config = await updateConfig(config, program);
+    await Migration
+      .getInstance()
+        .setup(_config)
+        .down();
+    process.exit();
   });
 
-/*
-program
-  .command('exec <cmd>')
-  .alias('ex')
-  .description('execute the given remote cmd')
-  .option("-e, --exec_mode <mode>", "Which exec mode to use")
-  .action(function(cmd, options){
-    console.log('exec "%s" using %s mode', cmd, options.exec_mode);
-  }).on('--help', function() {
-    console.log('  Examples:');
-    console.log();
-    console.log('    $ deploy exec sequential');
-    console.log('    $ deploy exec async');
-    console.log();
-  });
+  program
+  .command("show-config")
+  .description("show configuration")
+  .action(async (names, options) => {
+    let _config = await updateConfig(config, program);
+    console.log(_config);
+    return _config;
+  })
 
-program
-  .command('*')
-  .action(function(env){
-    console.log('deploying "%s"', env);
-  });*/
+
 
 program.parse(process.argv);
 
