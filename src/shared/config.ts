@@ -20,6 +20,7 @@ export const config: MigrationConfig = {
         database: "test",
         define: {
             timestamps: false
-        }
+        },
+        logging: false
     } as Sequelize.Options
 }

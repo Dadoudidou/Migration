@@ -92,7 +92,7 @@ export class Migration {
 
             // -- get last migration
             let _lastMigration = undefined;
-            let _queryLastMigration = await this._sequelize.query(`SELECT * FROM migrations order by run_on desc limit ${nb}`, { type: Sequelize.QueryTypes.SELECT });
+            let _queryLastMigration = await this._sequelize.query(`SELECT * FROM migrations order by run_on, id desc limit ${nb}`, { type: Sequelize.QueryTypes.SELECT });
             if(_queryLastMigration) return _queryLastMigration.map(x => x.name);
             return [];
 
@@ -230,15 +230,19 @@ exports.down = async function(db){
 
             // -- execution des fichiers
             for(let i=0; i<_filesToMigrate.length; i++){
-
+                let _insertInDatabase = false;
                 if(_filesToMigrate[i].match(/\.js$/g)){
                     await this.execJSFile(_filesToMigrate[i]);
+                    _insertInDatabase = true;
                 } else if(_filesToMigrate[i].match(/_up\.sql$/g)){
                     await this.execSQLFile(_filesToMigrate[i]);
+                    _insertInDatabase = true;
                 }
                 // -- store migration in database
-                let _sql = `INSERT INTO migrations (name, run_on) VALUES ('${_filesToMigrate[i]}', '${moment().format("YYYY-MM-DD HH:mm:ss")}')`;
-                await this._sequelize.query(_sql);
+                if(_insertInDatabase){
+                    let _sql = `INSERT INTO migrations (name, run_on) VALUES ('${_filesToMigrate[i]}', '${moment().format("YYYY-MM-DD HH:mm:ss")}')`;
+                    await this._sequelize.query(_sql);
+                }
 
             }
 

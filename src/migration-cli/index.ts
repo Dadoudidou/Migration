@@ -100,7 +100,7 @@ program
   .option("-d, --date <date>", "update database to date (YYYY-MM-DDTHH:mm:ss)")
   .action(async (names, options) => {
       let _date: Date = undefined
-      if(options.date){
+      if(options && options.date){
         let __date = moment(options.date);
         if(__date.isValid()) _date = __date.toDate();
       }
