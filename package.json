@@ -3,28 +3,35 @@
   "version": "0.1.2",
   "description": "A perso command line migration tool",
   "main": "dist/migration.js",
+  "types":"dist/migration.d.ts",
   "bin": {
     "migration": "./bin/migration-cli"
   },
   "scripts": {
     "test": "node bin/migration",
-    "start": "webpack --watch --progress"
+    "start": "webpack --watch --progress",
+    "build": "rimraf dist && webpack --progress && rimraf dist/dist-dts",
+    "temp": "rimraf dist"
   },
   "author": "dadoudidou",
   "license": "ISC",
-  "dependencies": {
-    "commander": "2.17.1",
+  "devDependencies": {
     "typescript": "3.0.1",
     "ts-loader": "4.5.0",
     "webpack": "4.17.0",
+    "dts-bundle-webpack": "1.0.2",
     "webpack-cli": "3.1.0",
     "webpack-node-externals": "1.7.2",
+    "@types/node": "10.7.1",
+    "rimraf": "2.6.3"
+  },
+  "dependencies": {
+    "commander": "2.17.1",
     "sequelize": "4.38.0",
     "mysql2": "1.5.2",
     "moment": "2.22.2",
     "deepextend": "0.0.3",
     "require-from-string": "2.0.2",
-    "@types/node": "10.7.1",
     "@types/sequelize": "4.27.24"
   }
 }
