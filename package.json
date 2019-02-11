@@ -1,17 +1,19 @@
 {
   "name": "@dadoudidou/migration",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "A perso command line migration tool",
-  "main": "dist/migration.js",
-  "types":"dist/migration.d.ts",
+  "main": "build/migration.js",
+  "types": "build/migration.d.ts",
+  "typescript":{
+    "definition": "build/migration.d.ts"
+  },
   "bin": {
     "migration": "./bin/migration-cli"
   },
   "scripts": {
     "test": "node bin/migration",
     "start": "webpack --watch --progress",
-    "build": "rimraf dist && webpack --progress && rimraf dist/dist-dts",
-    "temp": "rimraf dist"
+    "build": "webpack --progress && rimraf build/dist-dts"
   },
   "author": "dadoudidou",
   "license": "ISC",

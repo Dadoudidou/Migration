@@ -73,7 +73,7 @@ const updateConfig = async (config: MigrationConfig, params: any) => {
 }
 
 program
-  .version('0.1.0', '-v, --version')
+  .version('0.1.4', '-v, --version')
   .option('-c, --config <path>', 'set config file.')
   .option('-m, --migration-dir <path>', 'set migration dir. [defaults:"./migrations"]')
   .option('-db-host, --database-host <host>', 'set database host')

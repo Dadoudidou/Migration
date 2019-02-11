@@ -1,4 +1,4 @@
-import { MigrationConfig } from "../shared/config";
+import { MigrationConfig, MigrationLogger } from "../shared/config";
 import * as Sequelize from "sequelize"
 import * as Path from "path"
 import * as moment from "moment"

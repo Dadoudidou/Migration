@@ -4,7 +4,7 @@ const nodeExternals = require('webpack-node-externals');
 const DtsBundleWebpack = require('dts-bundle-webpack')
 
 const srcPath = path.resolve(__dirname, 'src');
-const distPath = path.resolve(__dirname, 'dist');
+const distPath = path.resolve(__dirname, 'build');
 
 module.exports = {
     name: "Migration",
@@ -36,10 +36,11 @@ module.exports = {
     plugins: [
         new DtsBundleWebpack({
             name: 'migration',
-            baseDir: 'dist/dist-dts',
-            main: 'dist/dist-dts/migration/index.d.ts',
+            baseDir: 'build/dist-dts',
+            main: 'build/dist-dts/migration/index.d.ts',
             out: '../migration.d.ts',
-            removeSource: true
+            removeSource: true,
+            outputAsModuleFolder: true
         })
     ],
     stats: {
