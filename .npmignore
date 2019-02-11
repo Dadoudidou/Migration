@@ -3,3 +3,4 @@ src
 .babelrc
 tsconfig.json
 webpack.config.js
+dist
