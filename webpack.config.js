@@ -16,6 +16,8 @@ module.exports = {
     output: {
         path: distPath,
         filename: "[name].js",
+        library: "migration",
+        libraryTarget: "umd"
     },
     target: "node",
     resolve: {
